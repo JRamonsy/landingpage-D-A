@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
 // Componente de Modal para servicios
@@ -68,6 +68,7 @@ const ServiceModal = ({ service, isOpen, onClose }) => {
 
 function App() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  const videoRef = useRef(null)
   const [selectedService, setSelectedService] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -162,6 +163,20 @@ function App() {
     return () => observer.disconnect()
   }, [])
 
+   const handleVideoPlay = () => {
+    setIsVideoPlaying(true)
+    if (videoRef.current) {
+      videoRef.current.play()
+    }
+  }
+
+  const handleVideoPause = () => {
+    setIsVideoPlaying(false)
+    if (videoRef.current) {
+      videoRef.current.pause()
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-blue-50">
       {/* Header con animación */}
@@ -234,7 +249,7 @@ function App() {
       </section>
 
       {/* Video Section con animación */}
-      <section className="py-16 animate-on-scroll">
+      {/* <section className="py-16 animate-on-scroll">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
             Conoce Nuestro <span className="text-pink-400">Trabajo</span>
@@ -261,6 +276,75 @@ function App() {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      </section> */}
+
+      {/* Video Section Actualizada */}
+      <section className="py-16 animate-on-scroll">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
+            Conoce Nuestro <span className="text-pink-400">Trabajo</span>
+          </h2>
+          
+          <div className="max-w-md mx-auto">
+            <div className="bg-gradient-to-r from-pink-100 to-blue-100 rounded-2xl p-6 shadow-lg">
+              {!isVideoPlaying ? (
+                <div 
+                  className=" bg-gradient-to-br from-pink-200 to-blue-200 rounded-2xl flex items-center justify-center cursor-pointer hover:opacity-90 transition duration-300 relative overflow-hidden"
+                  style={{ aspectRatio: '9/16' }}
+                  onClick={handleVideoPlay}
+                >
+                  {/* Miniatura del video o placeholder */}
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="text-center z-10">
+                    <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg hover:scale-110 transition duration-300">
+                      <span className="text-2xl text-pink-500">▶</span>
+                    </div>
+                    <p className="text-gray-700 font-semibold text-lg">Ver video demostrativo</p>
+                    <p className="text-gray-600 text-sm mt-2">Haz clic para reproducir</p>
+                  </div>
+                </div>
+              ) : (
+                <div className=" bg-black rounded-2xl overflow-hidden relative shadow-2xl"
+                style={{ aspectRatio: '9/16' }}>
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full object-cover"
+                    controls
+                    onEnded={handleVideoPause}
+                    playsInline
+                    /* Agrega estas propiedades para mejor rendimiento en móvil */
+                    preload="metadata"
+                    webkit-playsinline="true"
+                  >
+                    {/* Agrega múltiples formatos para mejor compatibilidad */}
+                    <source src="/videos/demo-video.mp4" type="video/mp4" />
+                    <source src="/videos/demo-video.webm" type="video/webm" />
+                    Tu navegador no soporta el elemento de video.
+                  </video>
+                  
+                  {/* Botón para cerrar el video */}
+                  <button
+                    onClick={handleVideoPause}
+                    className="absolute top-4 right-4 bg-black/50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/70 transition duration-300"
+                  >
+                    ✕
+                  </button>
+                  {/* Indicador de que es un Reel */}
+                  <div className="absolute top-3 left-3 bg-black/60 text-white px-2 py-1 rounded-full text-xs">
+                    🎬 Reel
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Información adicional debajo del video */}
+            <div className="text-center mt-6">
+              <p className="text-gray-600">
+                Mira cómo transformamos ideas en diseños extraordinarios
+              </p>
             </div>
           </div>
         </div>
